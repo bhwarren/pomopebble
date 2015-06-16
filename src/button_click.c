@@ -1,33 +1,30 @@
 #include <pebble.h>
+#include "PomoTimer.h"
 
 static Window *window;
 static TextLayer *text_layer;
-// static AppTimer *timer;
+static AppTimer *timer;
 
-// static void alerta(){
-//   text_layer_set_text(text_layer, "FIM!");
-// }
-static void startBusyTimer(){
-  text_layer_set_text(text_layer, "1500");
-  int restante = 25*60;
-//   while(restante != 0){
-//     psleep(1000);
-//     restante -=1;
-//     char label_text[4];
-//     snprintf(label_text, sizeof(label_text), "%u", restante);
-//     text_layer_set_text(text_layer, label_text);
-//   }
-  
+int restante = 1500;
+
+static void alerta(){
+    restante = restante - 60;
+    static char str[] = "";
+    snprintf(str, 5, "%d", restante);
+    text_layer_set_text(text_layer, str);
+    if (restante > 0){
+      timer = app_timer_register(60000, alerta, NULL);
+    }  
 }
 
 static void select_click_handler(ClickRecognizerRef recognizer, void *context) {
-//   text_layer_set_text(text_layer, "1500");
-  startBusyTimer();
-//   timer = app_timer_register(5000, alerta, NULL);
+  text_layer_set_text(text_layer, "1500");
+  timer = app_timer_register(60000, alerta, NULL);
 }
 
 static void up_click_handler(ClickRecognizerRef recognizer, void *context) {
-  text_layer_set_text(text_layer, "Up");
+  char * str = texto();
+  text_layer_set_text(text_layer, str);
 }
 
 static void down_click_handler(ClickRecognizerRef recognizer, void *context) {
