@@ -3,34 +3,41 @@
 
 static Window *window;
 static TextLayer *text_layer;
-// static AppTimer *timer;
 
-int minutos = 0;
+int minutos = 25;
+bool running = false;
 
-// static void alerta(){
-//     minutos++;
+static void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
+  
+  if(units_changed & SECOND_UNIT){
+    APP_LOG(APP_LOG_LEVEL_INFO,"segundos");
+  }
+  if(units_changed & MINUTE_UNIT){
+    APP_LOG(APP_LOG_LEVEL_INFO, "minutos");
+  }
+//     minutos--;    
 //     static char str[] = "";
 //     snprintf(str, 5, "%d", minutos);
 //     text_layer_set_text(text_layer, str);
-//     if (minutos == 20){
+//     if (minutos == 0){
 //       tick_timer_service_unsubscribe();
-//     }  
-// }
-
-static void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
-  minutos++;
-    static char str[] = "";
-    snprintf(str, 5, "%d", minutos);
-    text_layer_set_text(text_layer, str);
-    if (minutos == 20){
-      tick_timer_service_unsubscribe();
-    }
+//       text_layer_set_text(text_layer, "25");
+//     }
 }
 
 static void select_click_handler(ClickRecognizerRef recognizer, void *context) {
-  text_layer_set_text(text_layer, "0");
-  tick_timer_service_subscribe(SECOND_UNIT, tick_handler);
-//   timer = app_timer_register(60000, alerta, NULL);
+  if (running){
+    tick_timer_service_unsubscribe();
+    window_set_background_color(window, GColorDukeBlue);
+    running = false;
+    minutos = 25;
+    text_layer_set_text(text_layer, "25");
+  }else{
+    window_set_background_color(window, GColorRed);
+    running = true;
+    tick_timer_service_subscribe(SECOND_UNIT, tick_handler);  
+  }
+  
 }
 
 static void up_click_handler(ClickRecognizerRef recognizer, void *context) {
@@ -64,6 +71,7 @@ static void window_unload(Window *window) {
 
 static void init(void) {
   window = window_create();
+  window_set_background_color(window, GColorDukeBlue);
   window_set_click_config_provider(window, click_config_provider);
   window_set_window_handlers(window, (WindowHandlers) {
 	.load = window_load,
