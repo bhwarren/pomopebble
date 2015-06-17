@@ -3,23 +3,34 @@
 
 static Window *window;
 static TextLayer *text_layer;
-static AppTimer *timer;
+// static AppTimer *timer;
 
-int restante = 1500;
+int minutos = 0;
 
-static void alerta(){
-    restante = restante - 60;
+// static void alerta(){
+//     minutos++;
+//     static char str[] = "";
+//     snprintf(str, 5, "%d", minutos);
+//     text_layer_set_text(text_layer, str);
+//     if (minutos == 20){
+//       tick_timer_service_unsubscribe();
+//     }  
+// }
+
+static void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
+  minutos++;
     static char str[] = "";
-    snprintf(str, 5, "%d", restante);
+    snprintf(str, 5, "%d", minutos);
     text_layer_set_text(text_layer, str);
-    if (restante > 0){
-      timer = app_timer_register(60000, alerta, NULL);
-    }  
+    if (minutos == 20){
+      tick_timer_service_unsubscribe();
+    }
 }
 
 static void select_click_handler(ClickRecognizerRef recognizer, void *context) {
-  text_layer_set_text(text_layer, "1500");
-  timer = app_timer_register(60000, alerta, NULL);
+  text_layer_set_text(text_layer, "0");
+  tick_timer_service_subscribe(SECOND_UNIT, tick_handler);
+//   timer = app_timer_register(60000, alerta, NULL);
 }
 
 static void up_click_handler(ClickRecognizerRef recognizer, void *context) {
