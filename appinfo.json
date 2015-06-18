@@ -7,7 +7,13 @@
     "longName": "POMOPEBBLE",
     "projectType": "native",
     "resources": {
-        "media": []
+        "media": [
+            {
+                "file": "images/play.png",
+                "name": "START_BUTTON",
+                "type": "png"
+            }
+        ]
     },
     "sdkVersion": "3",
     "shortName": "POMOPEBBLE",
