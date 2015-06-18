@@ -1,11 +1,11 @@
 #include <pebble.h>
 #include "mainwindow.h"
 #include "installation.h"
-#include "constants.h"
-  
-  
+#include "constantes.h"
+    
 static void init(void) {
-  if (persist_read_bool(INSTALLED)){
+  if (!persist_exists(INSTALLED)){
+    APP_LOG(APP_LOG_LEVEL_INFO, "Instalando");
     installConfig();
   }
   show_mainwindow();

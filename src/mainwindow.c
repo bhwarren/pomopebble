@@ -1,6 +1,6 @@
 #include <pebble.h>
 #include "mainwindow.h"
-#include "constants.h"
+#include "constantes.h"
 
 // BEGIN AUTO-GENERATED UI CODE; DO NOT MODIFY
 static Window *s_window;
@@ -35,8 +35,7 @@ static void select_click_handler(ClickRecognizerRef recognizer, void *context) {
 }
 
 static void up_click_handler(ClickRecognizerRef recognizer, void *context) {
-  persist_write_int(CONFIG_WORK_TIME,25);
-  APP_LOG(APP_LOG_LEVEL_INFO, "cADASTRADO");
+
 }
 
 static void down_click_handler(ClickRecognizerRef recognizer, void *context) {
