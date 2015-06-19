@@ -1,6 +1,6 @@
 #include <pebble.h>
 #include "mainwindow.h"
-#include "constantes.h"
+#include "../constantes.h"
 #include "configwindow.h"
 
 // BEGIN AUTO-GENERATED UI CODE; DO NOT MODIFY
