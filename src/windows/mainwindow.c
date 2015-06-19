@@ -93,10 +93,14 @@ static void updateTimer(struct tm *tick_time, TimeUnits units_changed){
       m = persist_read_int(CONFIG_PAUSE_TIME);
       configPauseUI();
       mode = MODE_RUNNING_PAUSE;
+      vibes_short_pulse();
+      light_enable_interaction();
     }else{
       mode = MODE_RUNNING_WORK;
       m = persist_read_int(CONFIG_WORK_TIME);
       configRunningUI();
+      vibes_short_pulse();
+      light_enable_interaction();
     }
     s = 0;
     
