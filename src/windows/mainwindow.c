@@ -7,7 +7,6 @@ int m = 0;
 int s = 0;
 int mode = MODE_PAUSED;
 
-
 // BEGIN AUTO-GENERATED UI CODE; DO NOT MODIFY
 static Window *s_window;
 static GFont s_res_bitham_42_medium_numbers;
@@ -48,10 +47,10 @@ static void initialise_ui(void) {
   layer_add_child(window_get_root_layer(s_window), (Layer *)s_actionbarlayer_1);
   
   // counter_layer
-  counter_layer = text_layer_create(GRect(22, 92, 85, 24));
+  counter_layer = text_layer_create(GRect(2, 92, 118, 24));
   text_layer_set_background_color(counter_layer, GColorClear);
-  text_layer_set_text(counter_layer, "Done: 3");
-  
+  text_layer_set_text(counter_layer, "Done");
+  text_layer_set_text_alignment(counter_layer, GTextAlignmentCenter);
   text_layer_set_font(counter_layer, s_res_roboto_condensed_21);
   layer_add_child(window_get_root_layer(s_window), (Layer *)counter_layer);
 }
@@ -74,15 +73,15 @@ static void configRunningUI(){
 }
 
 static void configPauseUI(){
-  window_set_background_color(s_window, GColorKellyGreen);
-  text_layer_set_text_color(timer_layer, GColorBlack);
-  text_layer_set_text_color(counter_layer, GColorBlack);
+  window_set_background_color(s_window, GColorJaegerGreen);
+  text_layer_set_text_color(timer_layer, GColorWhite);
+  text_layer_set_text_color(counter_layer, GColorWhite);
 }
 
 static void configDefaultUI(){
-  window_set_background_color(s_window, GColorPictonBlue);
-  text_layer_set_text_color(timer_layer, GColorBlack);
-  text_layer_set_text_color(counter_layer, GColorBlack);
+  window_set_background_color(s_window, GColorCobaltBlue);
+  text_layer_set_text_color(timer_layer, GColorWhite);
+  text_layer_set_text_color(counter_layer, GColorWhite);
 }
 
 static void updateTimer(struct tm *tick_time, TimeUnits units_changed){
@@ -90,12 +89,17 @@ static void updateTimer(struct tm *tick_time, TimeUnits units_changed){
     s = 59;
     m--;
   }else if(s == 0 && m == 0){
-    configPauseUI();
-//     int ct = persist_read_int(CONFIG_POMODORO_COUNTER);
-//     ct++;
-//     persist_write_int(CONFIG_POMODORO_COUNTER, ct);
+    if(mode == MODE_RUNNING_WORK){
+      m = persist_read_int(CONFIG_PAUSE_TIME);
+      configPauseUI();
+      mode = MODE_RUNNING_PAUSE;
+    }else{
+      mode = MODE_RUNNING_WORK;
+      m = persist_read_int(CONFIG_WORK_TIME);
+      configRunningUI();
+    }
     s = 0;
-    m = persist_read_int(CONFIG_PAUSE_TIME);
+    
   }else{
     s--;
   }
@@ -145,15 +149,19 @@ static void handle_window_unload(Window* window) {
 
 static void handle_window_appear(Window* window){
   static char text[] = "";
+  static char cycleText[] = "";
   int min = persist_read_int(CONFIG_WORK_TIME);
-  snprintf(text, 7, "%d:00", min);
+  int cycle = persist_read_int(CONFIG_P_COUNTER);
+  snprintf(text, 8, "%.2d:00", min);
+  snprintf(cycleText, 10, "Done: %d", cycle);
   text_layer_set_text(timer_layer, text);
+  text_layer_set_text(counter_layer, cycleText);
 }
 
 void show_mainwindow(void) {
   initialise_ui();
   window_set_click_config_provider(s_window, click_config_provider);
-  window_set_background_color(s_window, GColorPictonBlue);
+  configDefaultUI();
   window_set_window_handlers(s_window, (WindowHandlers) {
     .unload = handle_window_unload,
     .appear = handle_window_appear,
