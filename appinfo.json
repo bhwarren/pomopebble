@@ -9,8 +9,43 @@
     "resources": {
         "media": [
             {
-                "file": "images/play.png",
-                "name": "START_BUTTON",
+                "file": "images/x_pb.png",
+                "name": "X_BTN",
+                "type": "png"
+            },
+            {
+                "file": "images/trash_pb.png",
+                "name": "TRASH_BTN",
+                "type": "png"
+            },
+            {
+                "file": "images/stopwatch_pb.png",
+                "name": "STOPWATCH_BTN",
+                "type": "png"
+            },
+            {
+                "file": "images/stop_pb.png",
+                "name": "STOP_BTN",
+                "type": "png"
+            },
+            {
+                "file": "images/reload_pb.png",
+                "name": "RELOAD_BTN",
+                "type": "png"
+            },
+            {
+                "file": "images/cog_pb.png",
+                "name": "COG_BTN",
+                "type": "png"
+            },
+            {
+                "file": "images/check_pb.png",
+                "name": "CHECK_BTN",
+                "type": "png"
+            },
+            {
+                "file": "images/play_green.png",
+                "name": "PLAY_BTN",
                 "type": "png"
             }
         ]
