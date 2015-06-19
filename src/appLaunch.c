@@ -1,5 +1,5 @@
 #include <pebble.h>
-#include "mainwindow.h"
+#include "windows/mainwindow.h"
 #include "installation.h"
 #include "constantes.h"
     
