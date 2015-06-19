@@ -2,6 +2,11 @@
 #include "mainwindow.h"
 #include "../constantes.h"
 #include "configwindow.h"
+  
+int m = 0;
+int s = 0;
+int mode = MODE_PAUSED;
+
 
 // BEGIN AUTO-GENERATED UI CODE; DO NOT MODIFY
 static Window *s_window;
@@ -28,7 +33,7 @@ static void initialise_ui(void) {
   // timer_layer
   timer_layer = text_layer_create(GRect(-3, 46, 117, 61));
   text_layer_set_background_color(timer_layer, GColorClear);
-  
+  text_layer_set_text(timer_layer, "25:00");
   text_layer_set_text_alignment(timer_layer, GTextAlignmentCenter);
   text_layer_set_font(timer_layer, s_res_bitham_42_medium_numbers);
   layer_add_child(window_get_root_layer(s_window), (Layer *)timer_layer);
@@ -61,10 +66,55 @@ static void destroy_ui(void) {
 }
 // END AUTO-GENERATED UI CODE
 
+static void configRunningUI(){
+  window_set_background_color(s_window, GColorDarkCandyAppleRed);
+  text_layer_set_text_color(timer_layer, GColorWhite);
+  text_layer_set_text_color(counter_layer, GColorWhite);
+}
+
+static void configPauseUI(){
+  window_set_background_color(s_window, GColorKellyGreen);
+  text_layer_set_text_color(timer_layer, GColorBlack);
+  text_layer_set_text_color(counter_layer, GColorBlack);
+}
+
+static void configDefaultUI(){
+  window_set_background_color(s_window, GColorPictonBlue);
+  text_layer_set_text_color(timer_layer, GColorBlack);
+  text_layer_set_text_color(counter_layer, GColorBlack);
+}
+
+static void updateTimer(struct tm *tick_time, TimeUnits units_changed){
+  if(s == 0){
+    s = 59;
+    m--;
+  }else{
+    s--;
+  }
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "%.2d:%.2d", m,s);
+  static char text[] = "";
+  snprintf(text, 7, "%.2d:%.2d", m,s);
+  text_layer_set_text(timer_layer, text);
+  
+}
+
 static void select_click_handler(ClickRecognizerRef recognizer, void *context) {
-  int var = persist_read_int(CONFIG_WORK_TIME);
-  int var2 = persist_read_int(CONFIG_PAUSE_TIME);
-  APP_LOG(APP_LOG_LEVEL_DEBUG, "%d - %d", var, var2);
+  if(mode == MODE_RUNNING_WORK || mode == MODE_RUNNING_PAUSE){
+    configDefaultUI();
+    tick_timer_service_unsubscribe();
+    mode = MODE_PAUSED;
+    static char text[] = "";
+    int min = persist_read_int(CONFIG_WORK_TIME);
+    snprintf(text, 7, "%d:00", min);
+    text_layer_set_text(timer_layer, text);
+  }else{
+    m = persist_read_int(CONFIG_WORK_TIME);
+    s = 0;
+    mode = MODE_RUNNING_WORK;
+    configRunningUI();
+    tick_timer_service_subscribe(SECOND_UNIT, updateTimer);  
+  }
+  
 }
 
 static void up_click_handler(ClickRecognizerRef recognizer, void *context) {
@@ -87,8 +137,8 @@ static void handle_window_unload(Window* window) {
 
 static void handle_window_appear(Window* window){
   static char text[] = "";
-  int minutos = persist_read_int(CONFIG_WORK_TIME);
-  snprintf(text, 7, "%d:00", minutos);
+  int min = persist_read_int(CONFIG_WORK_TIME);
+  snprintf(text, 7, "%d:00", min);
   text_layer_set_text(timer_layer, text);
 }
 
@@ -96,8 +146,6 @@ void show_mainwindow(void) {
   initialise_ui();
   window_set_click_config_provider(s_window, click_config_provider);
   window_set_background_color(s_window, GColorPictonBlue);
-//   window_set_background_color(s_window, GColorRed);
-//   window_set_background_color(s_window, GColorKellyGreen);
   window_set_window_handlers(s_window, (WindowHandlers) {
     .unload = handle_window_unload,
     .appear = handle_window_appear,

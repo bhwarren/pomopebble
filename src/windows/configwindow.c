@@ -41,6 +41,7 @@ static void click_config_provider(void *context) {
 void show_configwindow(void) {
   initialise_ui();
   window_set_click_config_provider(s_window, click_config_provider);
+  window_set_background_color(s_window, GColorPictonBlue);
   window_set_window_handlers(s_window, (WindowHandlers) {
     .unload = handle_window_unload,
   });
