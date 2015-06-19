@@ -28,7 +28,7 @@ static void initialise_ui(void) {
   // timer_layer
   timer_layer = text_layer_create(GRect(-3, 46, 117, 61));
   text_layer_set_background_color(timer_layer, GColorClear);
-  text_layer_set_text(timer_layer, "25:00");
+  
   text_layer_set_text_alignment(timer_layer, GTextAlignmentCenter);
   text_layer_set_font(timer_layer, s_res_bitham_42_medium_numbers);
   layer_add_child(window_get_root_layer(s_window), (Layer *)timer_layer);
@@ -86,9 +86,10 @@ static void handle_window_unload(Window* window) {
 }
 
 static void handle_window_appear(Window* window){
-  int var = persist_read_int(CONFIG_WORK_TIME);
-  int var2 = persist_read_int(CONFIG_PAUSE_TIME);
-  APP_LOG(APP_LOG_LEVEL_DEBUG, "%d - %d", var, var2);
+  static char text[] = "";
+  int minutos = persist_read_int(CONFIG_WORK_TIME);
+  snprintf(text, 7, "%d:00", minutos);
+  text_layer_set_text(timer_layer, text);
 }
 
 void show_mainwindow(void) {
