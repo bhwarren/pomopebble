@@ -51,6 +51,7 @@ static void initialise_ui(void) {
   counter_layer = text_layer_create(GRect(22, 92, 85, 24));
   text_layer_set_background_color(counter_layer, GColorClear);
   text_layer_set_text(counter_layer, "Done: 3");
+  
   text_layer_set_font(counter_layer, s_res_roboto_condensed_21);
   layer_add_child(window_get_root_layer(s_window), (Layer *)counter_layer);
 }
@@ -85,13 +86,20 @@ static void configDefaultUI(){
 }
 
 static void updateTimer(struct tm *tick_time, TimeUnits units_changed){
-  if(s == 0){
+  if(s == 0 && m > 0){
     s = 59;
     m--;
+  }else if(s == 0 && m == 0){
+    configPauseUI();
+//     int ct = persist_read_int(CONFIG_POMODORO_COUNTER);
+//     ct++;
+//     persist_write_int(CONFIG_POMODORO_COUNTER, ct);
+    s = 0;
+    m = persist_read_int(CONFIG_PAUSE_TIME);
   }else{
     s--;
   }
-  APP_LOG(APP_LOG_LEVEL_DEBUG, "%.2d:%.2d", m,s);
+  
   static char text[] = "";
   snprintf(text, 7, "%.2d:%.2d", m,s);
   text_layer_set_text(timer_layer, text);
