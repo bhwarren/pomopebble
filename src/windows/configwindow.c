@@ -14,7 +14,7 @@ static void initialise_ui(void) {
   
   // s_textlayer_1
   s_textlayer_1 = text_layer_create(GRect(16, 77, 100, 20));
-  text_layer_set_text(s_textlayer_1, "Text layer");
+  text_layer_set_text(s_textlayer_1, "Text layer2");
   layer_add_child(window_get_root_layer(s_window), (Layer *)s_textlayer_1);
 }
 
