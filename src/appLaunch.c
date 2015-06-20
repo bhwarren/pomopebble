@@ -4,9 +4,9 @@
 #include "constantes.h"
     
 static void init(void) {
-//   if (!persist_exists(INSTALLED)){
+  if (!persist_exists(INSTALLED)){
     installConfig();
-//   }
+  }
   show_mainwindow();
 }
 
