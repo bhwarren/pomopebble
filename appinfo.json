@@ -15,6 +15,11 @@
                 "file": "images/x_pb.png",
                 "name": "X_BTN",
                 "type": "png"
+            },
+            {
+                "file": "images/trash-icon.png",
+                "name": "TRASH_BTN",
+                "type": "png"
             }
         ]
     },
@@ -24,7 +29,7 @@
         "basalt"
     ],
     "uuid": "35435a03-e97a-4ac9-a70f-758423463da3",
-    "versionLabel": "1.0",
+    "versionLabel": "1.1",
     "watchapp": {
         "watchface": false
     }
