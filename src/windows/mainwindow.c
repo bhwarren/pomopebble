@@ -33,7 +33,6 @@ static void initialise_ui(void) {
   s_res_x_btn = gbitmap_create_with_resource(RESOURCE_ID_X_BTN);
   s_res_trash_btn = gbitmap_create_with_resource(RESOURCE_ID_TRASH_BTN);
 
-
   timer_layer = text_layer_create(GRect(-3, 45, 117, 61));
   text_layer_set_background_color(timer_layer, GColorClear);
   text_layer_set_text(timer_layer, "25:00");
