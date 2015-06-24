@@ -1,6 +1,8 @@
 #pragma once
 #include <pebble.h>
 
+#define CONFIG_WORK 0
+#define CONFIG_REST 1
 #define DATA_COUNTER 2  
 #define MODE_RUNNING_WORK 3
 #define MODE_RUNNING_PAUSE 4

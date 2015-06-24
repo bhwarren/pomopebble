@@ -1,9 +1,12 @@
 #include <pebble.h>
 #include "mainwindow.h"
 #include "../constantes.h"
+#include "configwindow.h"
   
 int m = 0;
 int s = 0;
+int worktime;
+int resttime;
 int counter = 0;
 int mode = MODE_PAUSED;
 
@@ -35,7 +38,6 @@ static void initialise_ui(void) {
 
   timer_layer = text_layer_create(GRect(-3, 45, 117, 61));
   text_layer_set_background_color(timer_layer, GColorClear);
-  text_layer_set_text(timer_layer, "25:00");
   text_layer_set_text_alignment(timer_layer, GTextAlignmentCenter);
   text_layer_set_text_color(timer_layer, GColorWhite);
   text_layer_set_font(timer_layer, s_res_bitham_42_medium_numbers);
@@ -100,8 +102,7 @@ static void updateTimer(struct tm *tick_time, TimeUnits units_changed){
     m--;
   }else if(s == 0 && m == 0){
     if(mode == MODE_RUNNING_WORK){
-      m = 5;
-      // m = 0;
+      m = resttime;
       configPauseUI();
       mode = MODE_RUNNING_PAUSE;
       vibes_short_pulse();
@@ -109,13 +110,11 @@ static void updateTimer(struct tm *tick_time, TimeUnits units_changed){
       updateCounter(false);
     }else{
       mode = MODE_RUNNING_WORK;
-      m = 25;
-      // m = 0;
+      m = worktime;
       configRunningUI();
       vibes_short_pulse();
       light_enable_interaction();
     }
-    // s = 10;
     s = 0;
     
   }else{
@@ -131,11 +130,10 @@ static void select_click_handler(ClickRecognizerRef recognizer, void *context) {
     configDefaultUI();
     tick_timer_service_unsubscribe();
     mode = MODE_PAUSED;
-    text_layer_set_text(timer_layer, "25:00");
+    snprintf(timeText, 7, "%.2d:00", worktime);
+    text_layer_set_text(timer_layer, timeText);
   }else{
-    // m = 0;
-    // s = 10;
-    m = 25;
+    m = worktime;
     s = 0;
     mode = MODE_RUNNING_WORK;
     configRunningUI();
@@ -148,9 +146,14 @@ static void down_click_handler(ClickRecognizerRef recognizer, void *context){
   updateCounter(true);
 }
 
+static void up_click_handler(ClickRecognizerRef recognizer, void *context){
+	show_configwindow();
+}
+
 static void click_config_provider(void *context) {
   window_single_click_subscribe(BUTTON_ID_SELECT, select_click_handler);
   window_single_click_subscribe(BUTTON_ID_DOWN, down_click_handler);
+  window_single_click_subscribe(BUTTON_ID_UP, up_click_handler);
 }
 
 static void handle_window_unload(Window* window) {
@@ -158,7 +161,11 @@ static void handle_window_unload(Window* window) {
 }
 
 static void handle_window_appear(Window* window){
-  text_layer_set_text(timer_layer, "25:00");
+	worktime = persist_read_int(CONFIG_WORK);
+	resttime = persist_read_int(CONFIG_REST);
+	snprintf(timeText, 7, "%.2d:00", worktime);
+	text_layer_set_text(timer_layer, timeText);
+
   counter = persist_read_int(DATA_COUNTER);
   snprintf(counterText, 10, "Done: %.2d", counter);
   text_layer_set_text(counter_layer, counterText);
