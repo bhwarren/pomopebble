@@ -19,6 +19,7 @@ static GFont s_res_roboto_condensed_21;
 static GBitmap *s_res_play_btn;
 static GBitmap *s_res_x_btn;
 static GBitmap *s_res_trash_btn;
+static GBitmap *s_res_config_btn;
 static TextLayer *timer_layer;
 static TextLayer *counter_layer;
 static ActionBarLayer *s_actionbarlayer_1;
@@ -35,6 +36,7 @@ static void initialise_ui(void) {
   s_res_play_btn = gbitmap_create_with_resource(RESOURCE_ID_PLAY_BTN);
   s_res_x_btn = gbitmap_create_with_resource(RESOURCE_ID_X_BTN);
   s_res_trash_btn = gbitmap_create_with_resource(RESOURCE_ID_TRASH_BTN);
+  s_res_config_btn = gbitmap_create_with_resource(RESOURCE_ID_CONFIG_BTN);
 
   timer_layer = text_layer_create(GRect(-3, 45, 117, 61));
   text_layer_set_background_color(timer_layer, GColorClear);
@@ -56,6 +58,7 @@ static void initialise_ui(void) {
   action_bar_layer_set_background_color(s_actionbarlayer_1, GColorClear);
   action_bar_layer_set_icon(s_actionbarlayer_1, BUTTON_ID_SELECT, s_res_play_btn);
   action_bar_layer_set_icon(s_actionbarlayer_1, BUTTON_ID_DOWN, s_res_trash_btn);
+  action_bar_layer_set_icon(s_actionbarlayer_1, BUTTON_ID_UP, s_res_config_btn);
   layer_add_child(window_get_root_layer(s_window), (Layer *)s_actionbarlayer_1);
 }
 
@@ -67,6 +70,7 @@ static void destroy_ui(void) {
   gbitmap_destroy(s_res_play_btn);
   gbitmap_destroy(s_res_x_btn);
   gbitmap_destroy(s_res_trash_btn);
+  gbitmap_destroy(s_res_config_btn);
 }
 
 static void configRunningUI(){

@@ -20,6 +20,11 @@
                 "file": "images/trash-icon.png",
                 "name": "TRASH_BTN",
                 "type": "png"
+            },
+            {
+                "file": "images/config_btn.png",
+                "name": "CONFIG_BTN",
+                "type": "png"
             }
         ]
     },
