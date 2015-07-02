@@ -2,7 +2,7 @@
 #include "mainwindow.h"
 #include "../constantes.h"
 #include "configwindow.h"
-  
+
 int m = 0;
 int s = 0;
 int worktime;
@@ -30,7 +30,7 @@ static void initialise_ui(void) {
   #ifndef PBL_SDK_3
     window_set_fullscreen(s_window, true);
   #endif
-  
+
   s_res_bitham_42_medium_numbers = fonts_get_system_font(FONT_KEY_BITHAM_42_MEDIUM_NUMBERS);
   s_res_roboto_condensed_21 = fonts_get_system_font(FONT_KEY_ROBOTO_CONDENSED_21);
   s_res_play_btn = gbitmap_create_with_resource(RESOURCE_ID_PLAY_BTN);
@@ -51,11 +51,11 @@ static void initialise_ui(void) {
   text_layer_set_text_alignment(counter_layer, GTextAlignmentCenter);
   text_layer_set_text_color(counter_layer, GColorWhite);
   text_layer_set_font(counter_layer, s_res_roboto_condensed_21);
-  layer_add_child(window_get_root_layer(s_window), (Layer *)counter_layer); 
+  layer_add_child(window_get_root_layer(s_window), (Layer *)counter_layer);
 
   s_actionbarlayer_1 = action_bar_layer_create();
   action_bar_layer_add_to_window(s_actionbarlayer_1, s_window);
-  action_bar_layer_set_background_color(s_actionbarlayer_1, GColorClear);
+  action_bar_layer_set_background_color(s_actionbarlayer_1, GColorWhite);
   action_bar_layer_set_icon(s_actionbarlayer_1, BUTTON_ID_SELECT, s_res_play_btn);
   action_bar_layer_set_icon(s_actionbarlayer_1, BUTTON_ID_DOWN, s_res_trash_btn);
   action_bar_layer_set_icon(s_actionbarlayer_1, BUTTON_ID_UP, s_res_config_btn);
@@ -92,7 +92,7 @@ static void updateCounter(bool zerar){
   if(zerar){
     counter = 0;
   }else{
-    counter++; 
+    counter++;
   }
   snprintf(counterText, 10, "Done: %.2d", counter);
   text_layer_set_text(counter_layer, counterText);
@@ -120,11 +120,11 @@ static void updateTimer(struct tm *tick_time, TimeUnits units_changed){
       light_enable_interaction();
     }
     s = 0;
-    
+
   }else{
     s--;
   }
-  
+
   snprintf(timeText, 7, "%.2d:%.2d", m,s);
   text_layer_set_text(timer_layer, timeText);
 }
@@ -141,9 +141,9 @@ static void select_click_handler(ClickRecognizerRef recognizer, void *context) {
     s = 0;
     mode = MODE_RUNNING_WORK;
     configRunningUI();
-    tick_timer_service_subscribe(SECOND_UNIT, updateTimer);  
+    tick_timer_service_subscribe(SECOND_UNIT, updateTimer);
   }
-  
+
 }
 
 static void down_click_handler(ClickRecognizerRef recognizer, void *context){
