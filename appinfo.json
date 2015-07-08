@@ -1,19 +1,16 @@
 {
     "appKeys": {},
-    "capabilities": [],
+    "capabilities": [
+        ""
+    ],
     "companyName": "Lucas Conceicao",
     "longName": "POMO D'ORO",
     "projectType": "native",
     "resources": {
         "media": [
             {
-                "file": "images/play_green.png",
-                "name": "PLAY_BTN",
-                "type": "png"
-            },
-            {
-                "file": "images/x_pb.png",
-                "name": "X_BTN",
+                "file": "images/config_btn.png",
+                "name": "CONFIG_BTN",
                 "type": "png"
             },
             {
@@ -22,8 +19,13 @@
                 "type": "png"
             },
             {
-                "file": "images/config_btn.png",
-                "name": "CONFIG_BTN",
+                "file": "images/x_pb.png",
+                "name": "X_BTN",
+                "type": "png"
+            },
+            {
+                "file": "images/play_green.png",
+                "name": "PLAY_BTN",
                 "type": "png"
             }
         ]

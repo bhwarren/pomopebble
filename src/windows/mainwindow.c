@@ -14,7 +14,7 @@ static char timeText[10] = "";
 static char counterText[10] = "";
 
 static Window *s_window;
-static GFont s_res_bitham_42_medium_numbers;
+static GFont s_res_bitham_42_light;
 static GFont s_res_roboto_condensed_21;
 static GBitmap *s_res_play_btn;
 static GBitmap *s_res_x_btn;
@@ -31,7 +31,8 @@ static void initialise_ui(void) {
     window_set_fullscreen(s_window, true);
   #endif
   
-  s_res_bitham_42_medium_numbers = fonts_get_system_font(FONT_KEY_BITHAM_42_MEDIUM_NUMBERS);
+  //s_res_bitham_42_medium_numbers = fonts_get_system_font(FONT_KEY_BITHAM_42_MEDIUM_NUMBERS);
+  s_res_bitham_42_light = fonts_get_system_font(FONT_KEY_BITHAM_42_LIGHT);
   s_res_roboto_condensed_21 = fonts_get_system_font(FONT_KEY_ROBOTO_CONDENSED_21);
   s_res_play_btn = gbitmap_create_with_resource(RESOURCE_ID_PLAY_BTN);
   s_res_x_btn = gbitmap_create_with_resource(RESOURCE_ID_X_BTN);
@@ -42,7 +43,7 @@ static void initialise_ui(void) {
   text_layer_set_background_color(timer_layer, GColorClear);
   text_layer_set_text_alignment(timer_layer, GTextAlignmentCenter);
   text_layer_set_text_color(timer_layer, GColorWhite);
-  text_layer_set_font(timer_layer, s_res_bitham_42_medium_numbers);
+  text_layer_set_font(timer_layer, s_res_bitham_42_light);
   layer_add_child(window_get_root_layer(s_window), (Layer *)timer_layer);
 
   counter_layer = text_layer_create(GRect(0, 90, 114, 25));
@@ -55,7 +56,7 @@ static void initialise_ui(void) {
 
   s_actionbarlayer_1 = action_bar_layer_create();
   action_bar_layer_add_to_window(s_actionbarlayer_1, s_window);
-  action_bar_layer_set_background_color(s_actionbarlayer_1, GColorClear);
+  action_bar_layer_set_background_color(s_actionbarlayer_1, GColorWhite);
   action_bar_layer_set_icon(s_actionbarlayer_1, BUTTON_ID_SELECT, s_res_play_btn);
   action_bar_layer_set_icon(s_actionbarlayer_1, BUTTON_ID_DOWN, s_res_trash_btn);
   action_bar_layer_set_icon(s_actionbarlayer_1, BUTTON_ID_UP, s_res_config_btn);
@@ -100,10 +101,15 @@ static void updateCounter(bool zerar){
 }
 
 static void updateTimer(struct tm *tick_time, TimeUnits units_changed){
-
-  if(s == 0 && m > 0){
+  if(m > 3){
+	  snprintf(timeText, 10, "%d m", m);
+	  //snprintf(timeText, 7, "%d", m);
+	  m--;
+  }else if(m == 3){
     s = 59;
-    m--;
+    m = 2;
+  	tick_timer_service_subscribe(SECOND_UNIT, updateTimer);
+	snprintf(timeText, 7, "%d:%.2d", m, s);
   }else if(s == 0 && m == 0){
     if(mode == MODE_RUNNING_WORK){
       m = resttime;
@@ -118,14 +124,25 @@ static void updateTimer(struct tm *tick_time, TimeUnits units_changed){
       configRunningUI();
       vibes_short_pulse();
       light_enable_interaction();
+
     }
+	if(m > 3){
+		tick_timer_service_subscribe(MINUTE_UNIT, updateTimer);
+	}
+
     s = 0;
-    
-  }else{
-    s--;
+
+  }else{ 
+    if(s == 0){
+		s = 59;
+		m--;
+	}else{
+		s--;
+	}
+	snprintf(timeText, 7, "%d:%.2d", m,s);
+	
   }
   
-  snprintf(timeText, 7, "%.2d:%.2d", m,s);
   text_layer_set_text(timer_layer, timeText);
 }
 
@@ -134,14 +151,18 @@ static void select_click_handler(ClickRecognizerRef recognizer, void *context) {
     configDefaultUI();
     tick_timer_service_unsubscribe();
     mode = MODE_PAUSED;
-    snprintf(timeText, 7, "%.2d:00", worktime);
+	if(worktime>9){
+    	snprintf(timeText, 7, "%.2d:00", worktime);
+	}else{
+    	snprintf(timeText, 7, "%d:00", worktime);
+	}
     text_layer_set_text(timer_layer, timeText);
   }else{
     m = worktime;
     s = 0;
     mode = MODE_RUNNING_WORK;
     configRunningUI();
-    tick_timer_service_subscribe(SECOND_UNIT, updateTimer);  
+    tick_timer_service_subscribe(MINUTE_UNIT, updateTimer);  
   }
   
 }
@@ -167,7 +188,11 @@ static void handle_window_unload(Window* window) {
 static void handle_window_appear(Window* window){
 	worktime = persist_read_int(CONFIG_WORK);
 	resttime = persist_read_int(CONFIG_REST);
-	snprintf(timeText, 7, "%.2d:00", worktime);
+	if(worktime>9){
+    	snprintf(timeText, 7, "%.2d:00", worktime);
+	}else{
+    	snprintf(timeText, 7, "%d:00", worktime);
+	}	
 	text_layer_set_text(timer_layer, timeText);
 
   counter = persist_read_int(DATA_COUNTER);
