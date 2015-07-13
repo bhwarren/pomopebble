@@ -7,3 +7,4 @@
 #define MODE_RUNNING_WORK 3
 #define MODE_RUNNING_PAUSE 4
 #define MODE_PAUSED 5
+#define PREV_MODE 4
