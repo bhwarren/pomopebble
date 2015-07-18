@@ -120,7 +120,9 @@ static void updateTimer(struct tm *tick_time, TimeUnits units_changed){
 	//only show minutes to save battery
   if(m > 3){
 	  snprintf(timeText, 7, "%d m", m);
-		m--;
+    if(tick_time->tm_sec == 0){
+		  m--;
+    }
 	//if we hit 3 min mark, switch to minutes+seconds
   }else if(m == 3){
     s = 59;
@@ -198,10 +200,6 @@ static void back_click_handler(ClickRecognizerRef recognizer, void *context){
 
 	//set timer 
 	if (!wakeup_query(s_wakeup_id, NULL) && mode != MODE_PAUSED) {
-		//give back the minute we already subtracted in the ticker handler
-		if(m>3){
-			m++;
-		}
 
     // Current time + however many seconds is left
     time_t future_time = time(NULL) + m*60 + s;
@@ -280,8 +278,11 @@ static void handle_window_appear(Window* window){
 			configRunningUI();
 		}
 		
-    //subscribe to seconds and let them finish before going back to minutes
-		tick_timer_service_subscribe(MINUTE_UNIT, updateTimer);  
+   /* if(m>3){
+      tick_timer_service_subscribe(MINUTE_UNIT, updateTimer);  
+    }else{*/
+      tick_timer_service_subscribe(SECOND_UNIT, updateTimer);  
+    //}
 		
 	
 	} else if(mode != MODE_PAUSED){
